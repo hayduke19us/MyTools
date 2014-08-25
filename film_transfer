@@ -1,0 +1,39 @@
+#!/bin/bash
+
+#rsync movie transfer setup alias. Vuze \Downloads to Volumes/Enter...
+#mvrf_film dest movie movie movie movie
+function mv_film(){
+  arg1=$1
+  arg2=$2
+  arg3=$3
+  arg4=$4
+  arg5=$5
+
+  #missing destination path exit and error
+  films=($arg2 $arg3 $arg4 $arg5)
+  new_films=()
+
+  for film in ${films[@]}
+  do
+    if [ -n "$film" ]; then
+      mvrf $film $arg1 &
+    else
+      exit
+    fi
+  done
+}
+
+#rsync function
+function mvrf(){
+  src=$1
+  dest=$2
+  rsync -aP $src /Volumes/Entertainment/movies/$dest
+  rm -rf $src
+  note_film $src
+}
+
+#Display notifications when movies transferred
+function note_film(){
+  movie_name=$1
+  osascript -e 'display notification "Success: Transfer Complete => '$movie_name'" with title "Film  Transfer"'
+}
