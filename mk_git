@@ -1,8 +1,7 @@
 #!/usr/bin/env ruby
 
-require 'minitest/autorun'
-require 'net/http'
-require 'uri'
+require 'json'
+require 'colorize'
 
 repo="user/repo"
 token="95e720abd618ee50d7d23b95b2c1ee57c9d952a5" 
@@ -20,11 +19,11 @@ class MyGit
   end
 
   def post
-    %x(http POST https://api.github.com/user/repos "Authorization:token 95e720abd618ee50d7d23b95b2c1ee57c9d952a5" name=#{@name} description=#{@description})
+    %x(http POST https://api.github.com/user/repos "Authorization:token 95e720abd618ee50d7d23b95b2c1ee57c9d952a5" name="#{@name}" description="#{@description}")
   end
 end
 
-
+=begin
 class TestMyGit < Minitest::Test
   def setup
     @git = MyGit.new name: "matt"
@@ -43,11 +42,15 @@ class TestMyGit < Minitest::Test
     @git.post
   end
 end
-
-# http POST https://api.github.com/user/repos Authorization:token\ 95e720abd619ee50d7d23b95b2c1ee57c9d952a5 name='something'
+=end
 
 git = MyGit.new name: ARGV[0], description: ARGV[1], token: ARGV[2]
-git.post
+response = git.post
+parsed = JSON.parse(response)
+puts "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+puts "Your remote repo, #{parsed['name']}, has been created.".colorize(:green)
+puts "To ADD to an existing local repo: git remote add origin https://github.com/hayduke19us/#{parsed['name']}.git".colorize(:light_blue)
+puts "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 
 
 
