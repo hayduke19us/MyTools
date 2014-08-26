@@ -1,0 +1,53 @@
+#!/usr/bin/env ruby
+
+require 'minitest/autorun'
+require 'net/http'
+require 'uri'
+
+repo="user/repo"
+token="95e720abd618ee50d7d23b95b2c1ee57c9d952a5" 
+name="test"
+init=true
+private=false
+
+class MyGit
+  BASE = "http://api.github.com/user/repos"
+  attr_accessor :name, :token, :description
+  def initialize(args)
+    @name = args.fetch(:name, "NO_NAME#{rand(1..100)}")
+    @description = args.fetch(:description, "NO_DESCRIPTION")
+    @token =args.fetch(:token, '95e720abd618ee50d7d23b95b2c1ee57c9d952a5')
+  end
+
+  def post
+    %x(http POST https://api.github.com/user/repos "Authorization:token 95e720abd618ee50d7d23b95b2c1ee57c9d952a5" name=#{@name} description=#{@description})
+  end
+end
+
+
+class TestMyGit < Minitest::Test
+  def setup
+    @git = MyGit.new name: "matt"
+  end
+
+  def test_MyGit_has_all_of_its_attributes
+    assert_equal "matt", @git.name
+  end
+
+  def test_description
+    @git.description = "nothing here"
+    assert_equal "nothing here", @git.description
+  end
+
+  def test_post
+    @git.post
+  end
+end
+
+# http POST https://api.github.com/user/repos Authorization:token\ 95e720abd619ee50d7d23b95b2c1ee57c9d952a5 name='something'
+
+git = MyGit.new name: ARGV[0], description: ARGV[1], token: ARGV[2]
+git.post
+
+
+
