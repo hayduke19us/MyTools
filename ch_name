@@ -1,0 +1,11 @@
+#!/bin/bash
+
+arg1=$1
+no_space=${arg1// /_}
+new_name=${no_space%.H*}
+if [[ -e $arg1 ]]; then 
+  echo "found"
+  mv "$arg1" "$new_name"
+else
+  echo "cant find file"
+fi

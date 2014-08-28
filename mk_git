@@ -47,6 +47,7 @@ end
 git = MyGit.new name: ARGV[0], description: ARGV[1], token: ARGV[2]
 response = git.post
 parsed = JSON.parse(response)
+puts response
 puts "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 puts "Your remote repo, #{parsed['name']}, has been created.".colorize(:green)
 puts "To ADD to an existing local repo: git remote add origin https://github.com/hayduke19us/#{parsed['name']}.git".colorize(:light_blue)
